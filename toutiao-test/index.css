@@ -1,0 +1,29 @@
+* {
+  margin: 0;
+}
+
+.image-item {
+  border-bottom: 1px solid #eee;
+  padding: 20px 10px;
+  font-size: 0;
+}
+
+.image-item-title {
+  font-size: 12px;
+}
+
+.single-image-item .image-item-title {
+  display: inline-block;
+  vertical-align: middle;
+  width: 67%;
+}
+
+.single-image-item .image {
+  display: inline-block;
+  vertical-align: middle;
+  width: 33%;
+}
+
+.multiple-image-item .image {
+  width: 33%;
+}

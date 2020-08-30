@@ -25,7 +25,8 @@ class Manager {
           const { data, type } = item;
           const Component = renderComponents[type];
           const component = new Component(data);
-          component.render(this.$el);
+          const element = component.constructElement();
+          this.$el.appendChild(element);
         })
       })
   }

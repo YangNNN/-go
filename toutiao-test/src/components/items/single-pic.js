@@ -10,15 +10,15 @@ export default class SinglePic extends Component {
     super(props)
   }
 
-  render($el) {
+  render() {
     const data = this.props
-    const html = `
-      <div class="item flex-between">
-        <p>${data.title}</p>
-        <img src='${data.image}' />
+    const html = 
+    `<div class="image-item single-image-item">
+        <p class="image-item-title">${data.title}</p>
+        <img class="image" src='${data.image}' />
       </div>
     `
-    this._constructElement($el, html);
+    return html;
   }
   
 }

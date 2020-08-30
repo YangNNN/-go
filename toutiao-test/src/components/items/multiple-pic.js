@@ -10,18 +10,18 @@ export default class MultiplePic extends Component {
     super(props)
   }
 
-  render($el) {
-
+  render() {
     const data = this.props
-    const html = `
-      <div class="item">
-        <p>${data.title}</p>
+    const html = 
+    `<div class="image-item multiple-image-item">
+        <p class="image-item-title">${data.title}</p>
         ${data.image_list.map(image => {
-          return `<img src=${image.url} />`
+          return `<img class="image" src="${image.url}" />`
         }).join('')}
       </div>
     `
-    this._constructElement($el, html);
+    console.log(html)
+    return html;
   }
   
 }
