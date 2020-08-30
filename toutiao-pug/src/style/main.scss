@@ -1,0 +1,20 @@
+* {
+  margin: 0;
+}
+
+$theme-color: red;
+$text-color: #333;
+$bg-color: #eee;
+
+.tab-bar {
+  background-color: $bg-color;
+  line-height: 34px;
+  .tab {
+    color: $text-color;
+    padding: 0 5px;
+    text-decoration: none;
+    &.active {
+      color: $theme-color;
+    }
+  }
+}
