@@ -252,7 +252,7 @@
 				return
 			}
 			originPersonDraw.call(this)
-		} 
+		}
 
 		var wall = new Wall();
 		var hero = new Hero();
