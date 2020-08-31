@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <div id="app">
+    <input v-model="name" type="text">
+    <div v-html="name"></div>
+    <button v-html="name" @click="onClick"></button>
+  </div>
+
+
+  <script>
+
+    class Dep {
+      constructor() {
+        this.listeners = [];
+      }
+      add(obj) {
+        this.listeners.push(obj);
+      }
+      notify() {
+        this.listeners.forEach(obj => obj.update && obj.update())
+      }
+    }
+
+    class Watcher {
+      constructor(options) {
+        this.update = options.update;
+        Dep.target = this;
+        options.allValue[options.key];
+        Dep.target = null;
+      }
+    }
+
+    class Vue {
+      constructor(options) {
+        this.$el = document.querySelector(options.el);
+        this.$options = options;
+        this.$data = options.data();
+        this.methods = options.methods;
+        this.observeRoot();
+        this.ovserveData(this.$data);
+        this.createFragment();
+        this.compile();
+      }
+      compile() {
+        this.compileNode()
+        this.$el.appendChild(this.$fragment);
+      }
+      compileNode() {
+        // 收集指令
+        const nodes = this.$fragment.childNodes;
+        Array.from(nodes).forEach(node => {
+          const binds = this._checkHasBind(node)
+          this._resolveBinds(binds, node)
+        })
+      }
+      _checkHasBind(node) {
+        const directives = []
+        const events = []
+        node.attributes && Array.from(node.attributes).forEach(attr => {
+          const dir_reg = /^v\-.+/;
+          const event_reg = /^@.+/;
+          if (dir_reg.test(attr.name)) directives.push({ name: attr.name, value: attr.value })
+          if (event_reg.test(attr.name)) events.push({ name: attr.name, value: attr.value })
+        })
+        return {
+          directives,
+          events
+        }
+      }
+      _resolveBinds(binds, node) {
+        const _this = this;
+        const { directives, events } = binds;
+        directives.length && directives.forEach(directive => {
+          const { name, value } = directive
+          const update = () => {
+            switch (name) {
+              case 'v-model':
+                node.oninput = () => {
+                  this[value] = node.value;
+                }
+                node.value = this[value];
+                break
+              case 'v-html':
+                node.innerHTML = this[value];
+            }
+          }
+
+          const watch_options = {
+            allValue: this.$data,
+            key: value,
+            update
+          }
+
+          new Watcher(watch_options);
+
+          update()
+
+        })
+
+        events.length && events.forEach(event => {
+          const { name, value } = event;
+          node.addEventListener(name.slice(1), () => {
+            _this[value].apply(_this);
+          })
+        })
+
+      }
+      createFragment() {
+        const fragment = document.createDocumentFragment();
+        while (this.$el.firstChild) {
+          fragment.appendChild(this.$el.firstChild);
+        }
+        this.$fragment = fragment;
+      }
+      observeRoot() {
+        const root = this;
+        function observe(source, target) {
+          Object.keys(target).forEach(key => {
+            Object.defineProperty(root, key, {
+              enumerable: true,
+              configurable: false,
+              get: function () {
+                return root[source][key];
+              },
+              set: function (newVal) {
+                return root[source][key] = newVal;
+              }
+            })
+          })
+        }
+        observe('$data', this.$data);
+        observe('methods', this.methods);
+      }
+      ovserveData(data) {
+        if (!data || typeof data !== 'object') return
+        Object.keys(data).forEach(key => {
+          let val = data[key];
+          if (typeof val === 'object') this.ovserveData(val);
+          const dep = new Dep();
+          Object.defineProperty(data, key, {
+            enumerable: true,
+            configurable: false,
+            get: function () {
+              Dep.target && dep.add(Dep.target);
+              return val;
+            },
+            set: function (newVal) {
+              val = newVal;
+              dep.notify();
+              return val
+            }
+          })
+        })
+      }
+    }
+
+    const vm = new Vue({
+      el: '#app',
+      data() {
+        return {
+          name: 'xiaoming'
+        }
+      },
+      methods: {
+        onClick() {
+          this.change()
+        },
+        change() {
+          this.name = '1'
+        }
+      }
+    })
+
+  </script>
+
+</body>
+
+</html>
