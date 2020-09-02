@@ -10,6 +10,20 @@ export default {
     return {
       message: 'hello'
     }
+  },
+  created() {
+    this.fetchData()
+  },
+  methods: {
+    fetchData() {
+      fetch('/list?tab=all')
+        .then(res => {
+          return res.json()
+        })
+        .then(({ data }) => {
+          console.log(data)
+        })
+    }
   }
 }
 </script>
