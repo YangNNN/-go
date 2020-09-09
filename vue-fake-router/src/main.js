@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import VueRouter from 'vue-router';
 import App from './App.vue';
-// import VueRouter from 'vue-router';
-import VueRouter from './vue-fake-router.js';
+// import VueRouter from './vue-fake-router.js';
 
 Vue.use(VueRouter);
 
