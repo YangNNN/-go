@@ -27,10 +27,10 @@ module.exports = {
             options: {
               data: {
                 tabs: [
-                  { id: 1, text: '军事', active: true },
-                  { id: 2, text: '生活' },
-                  { id: 3, text: '科技' },
-                  { id: 4, text: '时尚' }
+                  { id: 1, text: '推荐', active: true },
+                  { id: 2, text: '视频' },
+                  { id: 3, text: '热点' },
+                  { id: 4, text: '社会' }
                 ],
                 articles: [
                   { id: 1, text: '文字1' },
@@ -62,5 +62,12 @@ module.exports = {
       entry: path.resolve('src', 'style', 'main.scss'),
       filename: '[name].css'
     })
-  ]
+  ],
+  devServer: {
+    before(app) {
+      app.get('/tab', function(req, res) {
+        res.json('1')
+      })
+    }
+  }
 }
