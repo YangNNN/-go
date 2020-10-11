@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+
+  <script>
+
+    class Storage {
+
+      static instance = null;
+
+      constructor() {
+        if (Storage.instance) return Storage.instance
+
+        console.log('new')
+
+        Storage.instance = this
+
+      }
+
+      setItem(key, val) {
+        localStorage.setItem(key, val)
+      }
+
+      getItem(key) {
+        return localStorage.getItem(key)
+      }
+
+    }
+
+    
+    var storage1 = new Storage()
+    var storage2 = new Storage()
+    var storage3 = new Storage()
+
+    console.log(storage1 === storage3)
+
+    storage1.setItem('name', '1')
+    console.log(storage3.getItem('name'))
+
+  </script>
+
+</body>
+</html>
