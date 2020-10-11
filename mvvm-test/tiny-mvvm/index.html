@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <input id="input" v-model="text" type="text">
+
+  <script>
+
+    const $input = document.getElementById('input')
+
+    var data = {
+      text: '123',
+      info: {
+        age: 12
+      }
+    }
+
+    class Dep {
+      constructor() {
+        this.listeners = []
+      }
+
+      add(listener) {
+        this.listeners.push(listener)
+      }
+
+      notify() {
+        this.listeners.forEach(listener => {
+          listener.update?.()
+        })
+      }
+
+    }
+
+    Dep.target = null
+
+    class Watcher {
+      constructor(options) {
+        this.update = options.update
+
+        Dep.target = this
+
+        this.data = data
+        this.getexp = options.getexp
+        this.getter()
+
+        Dep.target = null
+
+      }
+
+      getter() {
+        return this.data[this.getexp]
+      }
+
+    }
+
+    function proxy(data) {
+      for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+          let _val =  data[key]
+          
+
+          if (typeof _val === 'object') {
+            proxy(_val)
+          } else {
+
+            let dep = new Dep()
+            
+            Object.defineProperty(data, key, {
+              set: function(val) {
+                _val = val
+                dep.notify()
+              },
+              get: function() {
+
+                Dep.target && dep.add(Dep.target)
+
+                return _val
+              }
+            })
+          }
+
+        }
+      }
+    }
+
+    proxy(data)
+
+    function compile() {
+
+      const attrs = $input.attributes
+
+      for (let i = 0 ;i < attrs.length; i++) {
+        const attr = attrs[i]
+        const key = attr.value
+
+        function update() {
+          switch(attr.name) {
+            case 'v-model': {
+              
+              $input.addEventListener('input', function(e) {
+                data[key] = e.currentTarget.value
+              })
+              $input.value = data[key]
+            }
+          }
+        }
+
+        update()
+
+        let watcher = new Watcher({
+          update,
+          data,
+          getexp: key
+        })
+
+      }
+
+    }
+
+    compile()
+
+  </script>
+
+</body>
+</html>
